@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+    color: #0f172a;
+    min-height: 100vh;
+}
+
+html.dark body {
+    background: linear-gradient(135deg, #020617 0%, #111827 100%);
+    color: #f8fafc;
+}
+
+:root {
+    --primary: #2563eb;
+    --secondary: #7c3aed;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --page-start: #f8fbff;
+    --page-end: #eef4ff;
+    --surface: #ffffff;
+    --surface-muted: #f8fafc;
+    --surface-accent: #eff6ff;
+    --border: #e2e8f0;
+}
+
+html[data-theme='light-emerald'] {
+    --primary: #059669;
+    --secondary: #0f766e;
+    --page-start: #f2fbf8;
+    --page-end: #e6f7f1;
+    --surface-accent: #ecfdf5;
+}
+
+html[data-theme='light-rose'] {
+    --primary: #e11d48;
+    --secondary: #c026d3;
+    --page-start: #fff6f8;
+    --page-end: #fdf0f7;
+    --surface-accent: #fff1f2;
+}
+
+html[data-theme='dark-ocean'] {
+    --primary: #38bdf8;
+    --secondary: #818cf8;
+    --page-start: #071525;
+    --page-end: #111827;
+    --surface: #0f1d31;
+    --surface-muted: #17243a;
+    --surface-accent: #102a43;
+    --border: #334155;
+}
+
+html[data-theme='dark-emerald'] {
+    --primary: #34d399;
+    --secondary: #2dd4bf;
+    --page-start: #071b1a;
+    --page-end: #102525;
+    --surface: #0d2524;
+    --surface-muted: #153331;
+    --surface-accent: #103b36;
+    --border: #28534d;
+}
+
+html[data-theme='dark-rose'] {
+    --primary: #fb7185;
+    --secondary: #f472b6;
+    --page-start: #21121b;
+    --page-end: #241827;
+    --surface: #2b1823;
+    --surface-muted: #3a2130;
+    --surface-accent: #451d2b;
+    --border: #684052;
+}
+
+html[data-theme] body {
+    background: linear-gradient(135deg, var(--page-start) 0%, var(--page-end) 100%);
+}
+
+html.dark[data-theme] body {
+    background: linear-gradient(135deg, var(--page-start) 0%, var(--page-end) 100%);
+}
+
+html[data-theme] .bg-white,
+html[data-theme] .bg-white\/80,
+html[data-theme] .bg-white\/90 {
+    background-color: color-mix(in srgb, var(--surface) 92%, transparent) !important;
+}
+
+html[data-theme] .bg-gray-50,
+html[data-theme] .bg-slate-50,
+html[data-theme] .bg-slate-800\/70 {
+    background-color: var(--surface-muted) !important;
+}
+
+html[data-theme] .bg-blue-50,
+html[data-theme] .bg-emerald-50 {
+    background-color: var(--surface-accent) !important;
+}
+
+html.dark[data-theme] .bg-gray-200,
+html.dark[data-theme] .bg-slate-200 {
+    background-color: var(--surface-muted) !important;
+}
+
+html[data-theme] [class*='border-slate-200'],
+html[data-theme] [class*='border-blue-200'] {
+    border-color: var(--border) !important;
+}
+
+html.dark[data-theme] [class*='border-slate-700'],
+html.dark[data-theme] [class*='border-slate-800'] {
+    border-color: var(--border) !important;
+}
+
+html[data-theme] [class*='from-slate-50'],
+html[data-theme] [class*='via-blue-50'],
+html[data-theme] [class*='to-violet-50'] {
+    --tw-gradient-from: var(--page-start) var(--tw-gradient-from-position) !important;
+    --tw-gradient-via: var(--surface-accent) var(--tw-gradient-via-position) !important;
+    --tw-gradient-to: var(--page-end) var(--tw-gradient-to-position) !important;
+}
+
+html[data-theme] .bg-blue-600 {
+    background-color: var(--primary) !important;
+}
+
+html[data-theme] .from-blue-600 {
+    --tw-gradient-from: var(--primary) var(--tw-gradient-from-position) !important;
+}
+
+html[data-theme] .to-violet-600 {
+    --tw-gradient-to: var(--secondary) var(--tw-gradient-to-position) !important;
+}
+
+::selection {
+    background: rgba(37, 99, 235, 0.25);
+}
+
+.gradient-bg {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity 300ms;
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity 300ms;
+}
