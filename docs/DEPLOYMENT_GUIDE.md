@@ -156,69 +156,33 @@ FLASK_ENV=production
 
 ---
 
-## Frontend Deployment (Vercel)
+## Vercel Deployment
 
-### Prerequisites
-- GitHub account with code pushed
-- Vercel account (https://vercel.com)
-- Backend API URL (from Render)
+The repository-root `vercel.json` configures two services in one Vercel project:
 
-### Step 1: Configure Frontend
+- The `backend` Flask service handles requests under `/api/`.
+- The `frontend` Vite service handles all other paths.
 
-Update `frontend/.env.production`:
-```
-REACT_APP_API_URL=https://diabetes-api-xxxxx.onrender.com/api
-```
+The frontend uses the same-origin `/api` path by default, so no production API
+URL environment variable is needed. For local development, Vite proxies `/api`
+to the Flask server on `localhost:5000`.
 
-### Step 2: Build Locally to Test
+Import the repository root as the Vercel project; do not set `frontend` as the
+project root. Review `vercel.json` if changing service names or public routes.
+
+**Model artifacts must be made available to the backend build.** The trained
+model and pipeline results are git-ignored in this repository, so they are not
+included in a fresh Vercel checkout. Without those files, the Flask app starts
+without a loaded model and prediction endpoints cannot serve predictions.
+
+Build the frontend locally to verify it:
 
 ```bash
 cd frontend
 npm run build
-npm run preview
 ```
 
-### Step 3: Push to GitHub
-
-```bash
-git add .
-git commit -m "Configure production environment"
-git push origin main
-```
-
-### Step 4: Deploy to Vercel
-
-1. Go to [Vercel.com](https://vercel.com)
-2. Click "New Project"
-3. Import GitHub repository
-4. Configure:
-   - **Framework Preset**: React
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Install Command**: `npm install`
-
-### Step 5: Add Environment Variables
-
-In Vercel project settings:
-```
-REACT_APP_API_URL=https://diabetes-api-xxxxx.onrender.com/api
-```
-
-### Step 6: Deploy
-
-1. Click "Deploy"
-2. Wait for build (2-5 minutes)
-3. Vercel provides your URL: `https://diabetes-prediction.vercel.app`
-4. Enable auto-deploy on push
-
-### Custom Domain (Optional)
-
-In Vercel project settings → Domains:
-```
-Add your custom domain
-DNS configuration will be provided
-```
+Then import the repository in Vercel and deploy from the repository root.
 
 ---
 
