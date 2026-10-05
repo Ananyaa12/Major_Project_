@@ -44,7 +44,7 @@ const DashboardPage = () => {
                 <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">Operations center</p>
-                        <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100">Live Model Dashboard</h1>
+                        <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100">DiabetesAI Model Analytics</h1>
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-300">
                         <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
@@ -52,13 +52,12 @@ const DashboardPage = () => {
                     </div>
                 </div>
 
-                {/* Model Info */}
                 {modelInfo && (
                     <div className="grid md:grid-cols-4 gap-6 mb-10">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-lg shadow p-6"
+                            className="glass-card rounded-[26px] p-6"
                         >
                             <div className="text-sm text-slate-500 dark:text-slate-400">Best Model</div>
                             <div className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-100">{modelInfo.best_model}</div>
@@ -68,7 +67,7 @@ const DashboardPage = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="bg-white rounded-lg shadow p-6"
+                            className="glass-card rounded-[26px] p-6"
                         >
                             <div className="text-sm text-slate-500 dark:text-slate-400">Accuracy</div>
                             <div className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-100">{(perf.accuracy * 100).toFixed(1)}%</div>
@@ -78,7 +77,7 @@ const DashboardPage = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-white rounded-lg shadow p-6"
+                            className="glass-card rounded-[26px] p-6"
                         >
                             <div className="text-sm text-slate-500 dark:text-slate-400">Precision</div>
                             <div className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-100">{(perf.precision * 100).toFixed(1)}%</div>
@@ -88,7 +87,7 @@ const DashboardPage = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="bg-white rounded-lg shadow p-6"
+                            className="glass-card rounded-[26px] p-6"
                         >
                             <div className="text-sm text-slate-500 dark:text-slate-400">F1-Score</div>
                             <div className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-100">{(perf.f1_score * 100).toFixed(1)}%</div>
@@ -96,18 +95,17 @@ const DashboardPage = () => {
                     </div>
                 )}
 
-                {/* Model Performance Details */}
                 <div className="rounded-[32px] border border-slate-200 bg-white/80 p-8 shadow-[0_20px_70px_rgba(15,23,42,0.08)] backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-3 text-white">
                             <FiBarChart2 className="h-5 w-5" />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Model Performance</h2>
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100">Model Performance</h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="rounded-3xl bg-slate-50 p-6 dark:bg-slate-800/70">
-                            <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">Key Metrics</h3>
+                            <h3 className="text-lg font-bold mb-4 text-slate-900 dark:text-slate-100">Key Metrics</h3>
                             <dl className="space-y-4">
                                 <div>
                                     <dt className="text-sm text-slate-500 dark:text-slate-400">Accuracy</dt>
@@ -125,7 +123,7 @@ const DashboardPage = () => {
                         </div>
 
                         <div className="rounded-3xl bg-slate-50 p-6 dark:bg-slate-800/70">
-                            <h3 className="text-lg font-semibold mb-4 text-slate-900 dark:text-slate-100">Dataset Snapshot</h3>
+                            <h3 className="text-lg font-bold mb-4 text-slate-900 dark:text-slate-100">Dataset Snapshot</h3>
                             <dl className="space-y-4">
                                 <div>
                                     <dt className="text-sm text-slate-500 dark:text-slate-400">Test Set Size</dt>

@@ -44,15 +44,18 @@ export const predictionService = {
 
 export const explainabilityService = {
     getFeatureImportance: () => apiClient.get('/explainability/feature-importance'),
+    getShapSummary: () => apiClient.get('/explainability/feature-importance'),
 }
 
 export const fairnessService = {
     getFairnessReport: () => apiClient.get('/fairness/report'),
+    getFairnessSummary: () => apiClient.get('/fairness/summary'),
 }
 
 export const analyticsService = {
     getPredictions: () => apiClient.get('/analytics/predictions'),
     getDashboardData: () => apiClient.get('/analytics/dashboard'),
+    getPredictionHistory: () => apiClient.get('/predict/history'),
 }
 
 export default apiClient

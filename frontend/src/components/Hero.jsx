@@ -11,7 +11,10 @@ import { FiArrowRight } from 'react-icons/fi'
 const Hero = () => {
     return (
         <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-blue-900 to-violet-900 flex items-center justify-center px-4 py-20">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.16),_transparent_35%)]" />
+            <div className="absolute inset-0 animated-grid opacity-30" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.18),_transparent_35%)]" />
+            <div className="absolute -left-10 top-20 h-52 w-52 rounded-full bg-cyan-400/20 blur-3xl float-slow" />
+            <div className="absolute right-8 bottom-10 h-60 w-60 rounded-full bg-violet-400/20 blur-3xl float-slower" />
             <div className="max-w-6xl mx-auto relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -24,15 +27,14 @@ const Hero = () => {
                         AI-powered health risk assessment
                     </div>
                     <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-                        Diabetes Risk Prediction
+                        Understand Your Diabetes Risk
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-cyan-200 to-violet-200">
                             with Explainable AI
                         </span>
                     </h1>
 
                     <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto leading-relaxed">
-                        Personalized diabetes risk assessment powered by machine learning,
-                        fairness-aware algorithms, and clinical insight.
+                        Personalized diabetes risk assessment powered by machine learning, fairness-aware analytics, and transparent clinical insight.
                     </p>
 
                     <div className="flex flex-col md:flex-row gap-4 justify-center mb-12">
@@ -57,19 +59,23 @@ const Hero = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="grid md:grid-cols-3 gap-6 mt-16"
+                        className="grid gap-6 mt-16 md:grid-cols-4"
                     >
-                        <div className="glass-effect p-6 rounded-lg">
-                            <div className="text-3xl font-bold">99%</div>
-                            <div className="text-sm opacity-90">Accuracy</div>
+                        <div className="glass-card rounded-[26px] p-6 text-left">
+                            <div className="text-3xl font-black">253K+</div>
+                            <div className="text-sm opacity-90">Health Records</div>
                         </div>
-                        <div className="glass-effect p-6 rounded-lg">
-                            <div className="text-3xl font-bold">250K+</div>
-                            <div className="text-sm opacity-90">Patients</div>
-                        </div>
-                        <div className="glass-effect p-6 rounded-lg">
-                            <div className="text-3xl font-bold">11</div>
+                        <div className="glass-card rounded-[26px] p-6 text-left">
+                            <div className="text-3xl font-black">11</div>
                             <div className="text-sm opacity-90">ML Models</div>
+                        </div>
+                        <div className="glass-card rounded-[26px] p-6 text-left">
+                            <div className="text-3xl font-black">4</div>
+                            <div className="text-sm opacity-90">Fairness Metrics</div>
+                        </div>
+                        <div className="glass-card rounded-[26px] p-6 text-left">
+                            <div className="text-3xl font-black">24/7</div>
+                            <div className="text-sm opacity-90">Explainable Insights</div>
                         </div>
                     </motion.div>
                 </motion.div>

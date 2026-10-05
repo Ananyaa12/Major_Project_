@@ -20,7 +20,7 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <div className="min-h-screen bg-gray-50">
+                <div className="premium-shell min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
                     <Navigation />
                     <Routes>
                         <Route path="/" element={<HomePage />} />

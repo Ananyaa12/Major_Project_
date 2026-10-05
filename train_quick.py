@@ -1,5 +1,4 @@
-"""Quick training script: trains a small RandomForest on a sample and saves artifacts.
-"""
+"""Train the six-feature diabetes model on the complete BRFSS dataset."""
 import json
 from pathlib import Path
 import pandas as pd
@@ -7,7 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import joblib
 
 
@@ -20,17 +19,16 @@ MODEL_DIR.mkdir(parents=True, exist_ok=True)
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def load_sample(n_samples=10000, random_state=42):
-    df = pd.read_csv(DATA_PATH)
-    if n_samples and n_samples < len(df):
-        df = df.sample(n_samples, random_state=random_state)
-    return df
+SELECTED_FEATURES = ['BMI', 'Age', 'Income', 'GenHlth', 'PhysHlth', 'Education']
 
 
-def quick_preprocess(df):
+def load_dataset():
+    return pd.read_csv(DATA_PATH)
+
+
+def preprocess(df):
     target_col = 'Diabetes_012'
-    feature_cols = [c for c in df.columns if c != target_col]
-    X = df[feature_cols].astype(float)
+    X = df[SELECTED_FEATURES].astype(float)
     y = df[target_col].astype(int)
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -46,41 +44,52 @@ def quick_preprocess(df):
         'X_test': X_test_scaled,
         'y_train': y_train.values,
         'y_test': y_test.values,
-        'feature_names': feature_cols,
+        'feature_names': SELECTED_FEATURES,
         'scaler': scaler,
     }
 
 
-def train_and_save(sample_n=10000):
-    print('Loading sample...')
-    df = load_sample(n_samples=sample_n)
-    proc = quick_preprocess(df)
-
-    print('Training RandomForest (quick)...')
-    rf = RandomForestClassifier(n_estimators=50, random_state=42, n_jobs=-1)
-    rf.fit(proc['X_train'], proc['y_train'])
-
-    y_pred = rf.predict(proc['X_test'])
-    y_proba = rf.predict_proba(proc['X_test']) if hasattr(rf, 'predict_proba') else None
-
-    perf = {
-        'accuracy': float(accuracy_score(proc['y_test'], y_pred)),
-        'precision': float(precision_score(proc['y_test'], y_pred, average='weighted', zero_division=0)),
-        'recall': float(recall_score(proc['y_test'], y_pred, average='weighted', zero_division=0)),
-        'f1_score': float(f1_score(proc['y_test'], y_pred, average='weighted', zero_division=0)),
+def calculate_metrics(y_true, y_pred):
+    return {
+        'accuracy': float(accuracy_score(y_true, y_pred)),
+        'precision': float(precision_score(y_true, y_pred, average='weighted', zero_division=0)),
+        'recall': float(recall_score(y_true, y_pred, average='weighted', zero_division=0)),
+        'f1_score': float(f1_score(y_true, y_pred, average='weighted', zero_division=0)),
     }
+
+
+def train_and_save():
+    print('Loading complete dataset...')
+    df = load_dataset()
+    print(f'Loaded {len(df):,} rows and using six features: {SELECTED_FEATURES}')
+    proc = preprocess(df)
+
+    print('Training holdout RandomForest for evaluation...')
+    evaluation_model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1, max_depth=18)
+    evaluation_model.fit(proc['X_train'], proc['y_train'])
+
+    holdout_pred = evaluation_model.predict(proc['X_test'])
+    holdout_metrics = calculate_metrics(proc['y_test'], holdout_pred)
+
+    print('Training final RandomForest on all dataset rows...')
+    final_model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1, max_depth=18)
+    X_all_scaled = proc['scaler'].fit_transform(df[SELECTED_FEATURES].astype(float))
+    y_all = df['Diabetes_012'].astype(int).to_numpy()
+    final_model.fit(X_all_scaled, y_all)
+    full_pred = final_model.predict(X_all_scaled)
+    full_metrics = calculate_metrics(y_all, full_pred)
 
     # Save model and scaler
     model_path = MODEL_DIR / 'random_forest.pkl'
     scaler_path = MODEL_DIR / 'scaler.pkl'
-    joblib.dump(rf, model_path)
+    joblib.dump(final_model, model_path)
     joblib.dump(proc['scaler'], scaler_path)
 
     # Feature importance (quick)
     try:
-        importances = rf.feature_importances_
+        importances = final_model.feature_importances_
         fi = [ {'feature': name, 'importance': float(imp)} for name, imp in zip(proc['feature_names'], importances) ]
-        fi_sorted = sorted(fi, key=lambda x: x['importance'], reverse=True)[:20]
+        fi_sorted = sorted(fi, key=lambda x: x['importance'], reverse=True)
     except Exception:
         fi_sorted = []
 
@@ -88,10 +97,15 @@ def train_and_save(sample_n=10000):
     results = {
         'timestamp': pd.Timestamp.now().isoformat(),
         'best_model': 'random_forest',
-        'model_performance': perf,
+        'model_performance': holdout_metrics,
+        'holdout_performance': holdout_metrics,
+        'full_dataset_performance': full_metrics,
         'feature_importance': fi_sorted,
         'test_set_size': int(len(proc['y_test'])),
+        'dataset_size': int(len(df)),
         'feature_names': proc['feature_names'],
+        'evaluation_confusion_matrix': confusion_matrix(proc['y_test'], holdout_pred).tolist(),
+        'full_dataset_confusion_matrix': confusion_matrix(y_all, full_pred).tolist(),
     }
 
     with open(RESULTS_DIR / 'pipeline_results.json', 'w') as f:
@@ -99,20 +113,28 @@ def train_and_save(sample_n=10000):
 
     comp_df = pd.DataFrame([{
         'Model': 'random_forest',
-        'Accuracy': perf['accuracy'],
-        'Precision': perf['precision'],
-        'Recall': perf['recall'],
-        'F1-Score': perf['f1_score'],
+        'Accuracy': holdout_metrics['accuracy'],
+        'Precision': holdout_metrics['precision'],
+        'Recall': holdout_metrics['recall'],
+        'F1-Score': holdout_metrics['f1_score'],
         'ROC-AUC': None,
     }])
     comp_df.to_csv(RESULTS_DIR / 'model_comparison.csv', index=False)
 
     with open(RESULTS_DIR / 'fairness_report.txt', 'w') as f:
-        f.write('Quick training fairness report: not computed in quick mode. Run full pipeline for detailed fairness metrics.')
+        f.write(
+            'Full dataset training report\n'
+            f'Rows used: {len(df):,}\n'
+            f'Features used: {", ".join(SELECTED_FEATURES)}\n'
+            f'Holdout metrics: {holdout_metrics}\n'
+            f'Full dataset fit metrics: {full_metrics}\n'
+            'Note: full dataset fit metrics are descriptive and should not be used as an unbiased estimate.\n'
+        )
 
-    print('Quick training complete. Model saved to', model_path)
-    print('Performance:', perf)
+    print('Full dataset training complete. Model saved to', model_path)
+    print('Holdout performance:', holdout_metrics)
+    print('Full dataset fit performance:', full_metrics)
 
 
 if __name__ == '__main__':
-    train_and_save(sample_n=8000)
+    train_and_save()

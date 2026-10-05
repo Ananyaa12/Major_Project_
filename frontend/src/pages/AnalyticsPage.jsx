@@ -41,17 +41,16 @@ const AnalyticsPage = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
                     <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-600">Insight layer</p>
-                    <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100">Analytics & Explainability</h1>
+                    <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100">Analytics & Explainability</h1>
                 </div>
 
-                {/* Model Comparison */}
                 {comparison && (
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="mb-12 overflow-hidden rounded-[32px] border border-slate-200 bg-white/80 shadow-[0_20px_70px_rgba(15,23,42,0.08)] backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
                         <div className="flex items-center gap-3 border-b border-slate-200 p-8 dark:border-slate-800">
                             <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-3 text-white">
                                 <FiBarChart2 className="h-5 w-5" />
                             </div>
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Model Comparison</h2>
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100">Model Comparison</h2>
                         </div>
 
                         <div className="overflow-x-auto">
@@ -81,28 +80,27 @@ const AnalyticsPage = () => {
                     </motion.div>
                 )}
 
-                {/* Feature Importance */}
                 {importance && (
                     <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="rounded-[32px] border border-slate-200 bg-white/80 p-8 shadow-[0_20px_70px_rgba(15,23,42,0.08)] backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 p-3 text-white">
                                 <FiCpu className="h-5 w-5" />
                             </div>
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Top Feature Importance (SHAP)</h2>
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100">Top Feature Importance (SHAP)</h2>
                         </div>
 
                         <div className="space-y-4">
                             {importance.slice(0, 10).map((feature, i) => (
                                 <div key={i}>
                                     <div className="flex justify-between mb-1">
-                                        <span className="font-semibold">{feature.Feature}</span>
-                                        <span className="text-gray-600">{feature.Importance.toFixed(4)}</span>
+                                        <span className="font-semibold">{feature.feature || feature.Feature}</span>
+                                        <span className="text-gray-600">{Number(feature.importance ?? feature.Importance ?? 0).toFixed(4)}</span>
                                     </div>
                                     <div className="w-full bg-slate-200 rounded-full h-2 dark:bg-slate-700">
                                         <div
                                             className="bg-gradient-to-r from-blue-600 to-violet-600 h-2 rounded-full"
                                             style={{
-                                                width: `${(feature.Importance / Math.max(...importance.map(f => f.Importance))) * 100}%`,
+                                                width: `${Math.max((Number(feature.importance ?? feature.Importance ?? 0) / Math.max(...importance.map((item) => Number(item.importance ?? item.Importance ?? 0)))) * 100, 8)}%`,
                                             }}
                                         ></div>
                                     </div>

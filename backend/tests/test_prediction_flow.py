@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from backend.app import app, prepare_feature_vector
+from backend.app import app, prepare_feature_vector, generate_recommendations
 
 
 def test_prepare_feature_vector_scales_input_with_scaler():
@@ -47,3 +47,36 @@ def test_predict_endpoint_accepts_demo_request_without_auth():
     data = response.get_json()
     assert 'risk_level' in data
     assert 'probability' in data
+    assert 'explanation' in data
+    assert 'recommendations' in data
+
+
+def test_generate_recommendations_returns_actionable_list():
+    summary = generate_recommendations({
+        'BMI': 31,
+        'PhysActivity': 0,
+        'Fruits': 0,
+        'Veggies': 0,
+        'Age': 7,
+        'HighBP': 1,
+        'Stroke': 0,
+        'HeartDiseaseorAttack': 0,
+        'GenHlth': 4,
+        'Income': 2,
+    }, 'High Risk')
+
+    assert isinstance(summary, dict)
+    assert 'diet' in summary
+    assert 'exercise' in summary
+    assert 'monitoring' in summary
+    assert len(summary['diet']) >= 2
+
+
+def test_history_endpoint_returns_prediction_records():
+    client = app.test_client()
+    response = client.get('/api/predict/history')
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert 'history' in data
+    assert isinstance(data['history'], list)
