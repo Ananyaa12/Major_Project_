@@ -1,7 +1,7 @@
 # Python Dependencies for ML Pipeline and Backend
 
 # Data Processing
-pandas==2.1.3
+pandas==2.0.3
 numpy==1.25.3
 scikit-learn==1.3.2
 
