@@ -1,5 +1,9 @@
 # Python Dependencies for ML Pipeline and Backend
 
+# Build tools (ensure build environment has setuptools and wheel)
+setuptools>=65.0.0
+wheel>=0.40.0
+
 # Data Processing
 pandas==2.0.3
 numpy==1.25.3
